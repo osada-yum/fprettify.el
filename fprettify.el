@@ -6,16 +6,18 @@
 
 (defvar fprettify-executable "fprettify")
 
+(defvar fprettify-tmp-file (make-temp-file "fprettify-tmp" nil ".f90"))
 
 (defmacro fprettify-args-format (str var)
   "If `VAR' is nil then return nil, else return `STR' `VAR'."
   `(when ,var
-     (if (eq ,var t)
-	 (format " %s True" ,str)
-       (format   " %s %d"   ,str ,var))))
+     (if (eq t ,var)
+	 (format " %s"   ,str)
+       (format " %s %s"   ,str ,var))))
 (defun fprettify-args ()
   "Create args."
   (concat
+   (fprettify-args-format "-s"  t)
    (fprettify-args-format "-i"  f90-program-indent)
    ))
 (defun fprettify-command ()
@@ -31,9 +33,10 @@
     (let ((cur-buf        (current-buffer))
 	  (fpe-stdout-buf (get-buffer-create "*fprettify*"))
 	  (fpe-stderr-buf (get-buffer-create "*fprettify<stderr>*")))
-      (shell-command (format "bash -c %s <<< '%s'"
-			     (fprettify-command)
-			     (buffer-substring-no-properties (point-min) (point-max)))
+      (write-region (point-min) (point-max) fprettify-tmp-file)
+      (shell-command (format "%s %s"
+                             (fprettify-command)
+                             fprettify-tmp-file)
 		     fpe-stdout-buf fpe-stderr-buf)
       (with-current-buffer fpe-stderr-buf
 	(when (> (point-max) (point-min)) ;; Buffer is not empty.
