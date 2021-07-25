@@ -42,7 +42,6 @@
 	(when (> (point-max) (point-min)) ;; Buffer is not empty.
 	  (goto-char (point-max))
 	  (backward-page)
-	  (forward-char)
 	  (message (buffer-substring-no-properties (point) (point-max)))
 	  (delete-region (point-min) (point-max))))
       (replace-buffer-contents fpe-stdout-buf))))
