@@ -8,7 +8,7 @@
 
 (defvar fprettify-diff "")
 
-(defmacro args-format (str var)
+(defmacro fprettify-args-format (str var)
   "If `VAR' is nil then return nil, else return `STR' `VAR'."
   `(when ,var
      (if (eq ,var t)
@@ -17,7 +17,7 @@
 (defun fprettify-args ()
   "Create args."
   (concat
-   (args-format "-i"  f90-program-indent)
+   (fprettify-args-format "-i"  f90-program-indent)
    ))
 (defun fprettify-command ()
   "Create command."
