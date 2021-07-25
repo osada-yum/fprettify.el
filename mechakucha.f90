@@ -1,7 +1,8 @@
 # define are 3490
 program   test
+             use     ,   intrinsic      ::   iso_fortran_env
   implicit     none
-     integer    ::               i
+     integer    ::               i     ,    j
 
    print   *  ,   "hi"
 i=   9
@@ -9,7 +10,10 @@ i=   9
       if    (i.le.    4  )      then
 !print       *  ,  i, "a                                                                                                                    hi"
 write ( *, * )                                  i
-   end if
+end if
+ do j=1,2
+write(*,*)j
+    end do
       end do
                         ! print?
       print     *   ,   3    *    ( 1                   +2)    ,   .true.   .and.   .false..or..true.
