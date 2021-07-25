@@ -46,5 +46,11 @@
 	(delete-region (point) (point-max)))
       (replace-buffer-contents fpe-stdout-buf))))
 
+(add-hook 'f90-mode-hook
+	  #'(lambda()
+	      (add-hook 'before-save-hook
+			#'fprettify-run
+			nil t)))
+
 (provide 'fprettify)
 ;;; fprettify.el ends here
