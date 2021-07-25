@@ -29,12 +29,19 @@
   "Run `fprettify' with string in `current-buffer'."
   (interactive)
   (save-excursion
-    (let ((fpe-buf  (get-buffer-create "*fprettify*")))
+    (let ((cur-buf        (current-buffer))
+	  (fpe-stdout-buf (get-buffer-create "*fprettify*"))
+	  (fpe-stderr-buf (get-buffer-create "*fprettify<stderr>*")))
       (shell-command (format "%s <<< '%s'"
 			     (fprettify-command)
 			     (buffer-substring-no-properties (point-min) (point-max)))
-		     fpe-buf)
-      (replace-buffer-contents fpe-buf))))
+		     fpe-stdout-buf fpe-stderr-buf)
+      (with-current-buffer fpe-stderr-buf
+	(goto-char (point-max))
+	(backward-page)
+	(forward-char)
+	(message (buffer-substring-no-properties (point) (point-max))))
+      (replace-buffer-contents fpe-stdout-buf))))
 
 (provide 'fprettify)
 ;;; fprettify.el ends here
