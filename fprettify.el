@@ -11,7 +11,7 @@
 (defmacro args-format (str var)
   "If `VAR' is nil then return nil, else return `STR' `VAR'."
   `(when ,var
-     (if (eq var t)
+     (if (eq ,var t)
 	 (format " %s True" ,str)
        (format   " %s %d"   ,str ,var))))
 (defun fprettify-args ()
