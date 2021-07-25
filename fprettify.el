@@ -31,7 +31,7 @@
   (save-excursion
     (let ((cur-buf        (current-buffer))
 	  (fpe-stdout-buf (get-buffer-create "*fprettify*")))
-      (shell-command (format "%s <<< '%s'"
+      (shell-command (format "bash -c %s <<< '%s'"
 			     (fprettify-command)
 			     (buffer-substring-no-properties (point-min) (point-max)))
 		     fpe-stdout-buf fpe-stdout-buf)
