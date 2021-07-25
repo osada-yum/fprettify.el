@@ -30,17 +30,20 @@
   (interactive)
   (save-excursion
     (let ((cur-buf        (current-buffer))
-	  (fpe-stdout-buf (get-buffer-create "*fprettify*"))
-	  (fpe-stderr-buf (get-buffer-create "*fprettify<stderr>*")))
+	  (fpe-stdout-buf (get-buffer-create "*fprettify*")))
       (shell-command (format "%s <<< '%s'"
 			     (fprettify-command)
 			     (buffer-substring-no-properties (point-min) (point-max)))
-		     fpe-stdout-buf fpe-stderr-buf)
-      (with-current-buffer fpe-stderr-buf
+		     fpe-stdout-buf fpe-stdout-buf)
+      (with-current-buffer fpe-stdout-buf
 	(goto-char (point-max))
 	(backward-page)
 	(forward-char)
-	(message (buffer-substring-no-properties (point) (point-max))))
+	(message (buffer-substring-no-properties (point) (point-max)))
+	(backward-page)
+	(forward-line -1)
+	(beginning-of-line)
+	(delete-region (point) (point-max)))
       (replace-buffer-contents fpe-stdout-buf))))
 
 (provide 'fprettify)
