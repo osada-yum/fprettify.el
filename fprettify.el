@@ -82,7 +82,7 @@
                              fprettify-tmp-file)
 		     fpe-stdout-buf fpe-stderr-buf)
       (with-current-buffer fpe-stderr-buf
-	(when (> (point-max) (point-min)) ;; Buffer is not empty.
+	(when (< (point-min) (point-max)) ;; Buffer is not empty.
 	  (goto-char (point-max))
 	  (backward-page)
 	  (message (buffer-substring-no-properties (point) (point-max)))
