@@ -91,9 +91,7 @@
 
 (add-hook 'f90-mode-hook
 	  #'(lambda()
-	      (add-hook 'before-save-hook
-			#'fprettify-run
-			nil t)))
+	      (add-hook 'before-save-hook #'fprettify-run nil 'make-it-local)))
 
 (provide 'fprettify)
 ;;; fprettify.el ends here
