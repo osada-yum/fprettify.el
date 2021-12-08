@@ -9,7 +9,6 @@
 
 (defvar fprettify-executable "fprettify")
 
-(defvar fprettify-whitespace-style 2)
 (defcustom fprettify-executable-path nil
   "Path to directory of executable of fprettify."
   :group 'fprettify
@@ -20,6 +19,15 @@
 Otherwise return fprettify."
   (concat fprettify-executable-path fprettify-executable))
 
+(defcustom fprettify-whitespace-style 2
+  "Select whitespace style from 5 presets.
+Default: 2."
+  :group 'fprettify
+  :type '(choice (const :tag "minimal" 0)
+                 (const :tag "0 + operators (except arithmetic)" 1)
+                 (const :tag "1 + print or read, + or -" 2)
+                 (const :tag "2 + * or /" 3)
+                 (const :tag "3 + type % member" 4)))
 
 (defvar fprettify-whitespace-comma      t)
 (defvar fprettify-whitespace-assignment t)
