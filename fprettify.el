@@ -1,4 +1,4 @@
-;;; package --- Summary
+;;; fprettify.el --- Interface to fprettify, auto-formatter for modern Fortran code -*- lexical-binding: t; -*-
 ;;; Commentary:
 
 ;;; Code:
