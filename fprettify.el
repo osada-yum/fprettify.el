@@ -10,6 +10,16 @@
 (defvar fprettify-executable "fprettify")
 
 (defvar fprettify-whitespace-style 2)
+(defcustom fprettify-executable-path nil
+  "Path to directory of executable of fprettify."
+  :group 'fprettify
+  :type 'directory)
+
+(defun fprettify-executable-command ()
+  "Return full-path to fprettify if `fprettify-executable-path' exists.
+Otherwise return fprettify."
+  (concat fprettify-executable-path fprettify-executable))
+
 
 (defvar fprettify-whitespace-comma      t)
 (defvar fprettify-whitespace-assignment t)
@@ -69,7 +79,7 @@
 (defun fprettify-command ()
   "Create command."
   (format "%s %s"
-          fprettify-executable
+          (fprettify-executable-command)
           (fprettify-args)))
 
 (defun fprettify-run ()
