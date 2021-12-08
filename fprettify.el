@@ -34,9 +34,9 @@
 (defmacro fprettify-args-format (str var)
   "If `VAR' is nil then return nil, else return `STR' `VAR'."
   `(cond ((integerp ,var) (format " %s %s"    ,str ,var))
-	 ((eq t   ,var  ) (format " %s=True"  ,str))
-	 ((eq nil ,var  ) (format " %s=False" ,str))
-	 (t (message "Unknown argument in macro `fprettify-args-format'."))))
+         ((eq t     ,var) (format " %s=True"  ,str))
+         ((eq nil   ,var) (format " %s=False" ,str))
+         (t (message "Unknown argument in macro `fprettify-args-format'."))))
 (defun fprettify-args ()
   "Create args."
   (concat
@@ -66,32 +66,32 @@
 (defun fprettify-command ()
   "Create command."
   (format "%s %s"
-	  fprettify-executable
-	  (fprettify-args)))
+          fprettify-executable
+          (fprettify-args)))
 
 (defun fprettify-run ()
   "Run `fprettify' with string in `current-buffer'."
   (interactive)
   (save-excursion
     (let ((cur-buf        (current-buffer))
-	  (fpe-stdout-buf (get-buffer-create "*fprettify*"))
-	  (fpe-stderr-buf (get-buffer-create "*fprettify<stderr>*")))
+          (fpe-stdout-buf (get-buffer-create "*fprettify*"))
+          (fpe-stderr-buf (get-buffer-create "*fprettify<stderr>*")))
       (write-region (point-min) (point-max) fprettify-tmp-file)
       (shell-command (format "%s %s"
                              (fprettify-command)
                              fprettify-tmp-file)
-		     fpe-stdout-buf fpe-stderr-buf)
+                     fpe-stdout-buf fpe-stderr-buf)
       (with-current-buffer fpe-stderr-buf
-	(when (< (point-min) (point-max)) ;; Buffer is not empty.
-	  (goto-char (point-max))
-	  (backward-page)
-	  (message (buffer-substring-no-properties (point) (point-max)))
-	  (delete-region (point-min) (point-max))))
+        (when (< (point-min) (point-max)) ;; Buffer is not empty.
+          (goto-char (point-max))
+          (backward-page)
+          (message (buffer-substring-no-properties (point) (point-max)))
+          (delete-region (point-min) (point-max))))
       (replace-buffer-contents fpe-stdout-buf))))
 
 (add-hook 'f90-mode-hook
-	  #'(lambda()
-	      (add-hook 'before-save-hook #'fprettify-run nil 'make-it-local)))
+          #'(lambda()
+              (add-hook 'before-save-hook #'fprettify-run nil 'make-it-local)))
 
 (provide 'fprettify)
 ;;; fprettify.el ends here
