@@ -31,6 +31,12 @@ Default: value of `f90-program-indent', not 3."
   :group 'fprettify
   :type 'integer)
 
+(defcustom fprettify-line-length 132
+  "Warning if column of line exceeds this value.
+Default: 132."
+  :group 'fprettify
+  :type 'integer)
+
 (defcustom fprettify-whitespace-style 2
   "Select whitespace style from 5 presets.
 Default: 2."
@@ -80,6 +86,7 @@ Default: 2."
     (concat
      "-s"
      (fprettify-args-format "-i"  fprettify-indent)
+     (fprettify-args-format "-l"  fprettify-line-length)
      (fprettify-args-format "-w"  fprettify-whitespace-style)
      (fprettify-args-format "--whitespace-comma"      fprettify-whitespace-comma)
      (fprettify-args-format "--whitespace-assignment" fprettify-whitespace-assignment)
