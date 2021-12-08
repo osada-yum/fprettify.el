@@ -3,6 +3,9 @@
 
 ;;; Code:
 (require 'f90)
+(defgroup fprettify nil
+  "Format with fprettify."
+  :group 'applications)
 
 (defvar fprettify-executable "fprettify")
 
