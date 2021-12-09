@@ -1,4 +1,6 @@
 * fprettify.el
 ** Usage
-`M-x` `fprettify-run`
-You can format current-buffer by `fprettify`.
+Load ~fprettify.el~ and ~M-x~ ~fprettify-run~.
+You can format current-buffer by ~fprettify~.
+You can customize settings of format by ~customize-group fprettify~.
+~mechakucha.f90~ is file for test `fprettify`.
