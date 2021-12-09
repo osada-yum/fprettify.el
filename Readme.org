@@ -1,0 +1,4 @@
+* fprettify.el
+** Usage
+`M-x` `fprettify-run`
+You can format current-buffer by `fprettify`.
