@@ -25,7 +25,7 @@ Otherwise return fprettify."
 
 (defcustom fprettify-config-file nil
   "Path to fprettify config file.
-Default: `nil'."
+Default: nil."
   :group 'fprettify
   :type 'file)
 
@@ -80,7 +80,8 @@ Default: 2."
          ((stringp  ,var) (format " %s %s"    ,str ,var))
          ((eq t     ,var) (format " %s=True"  ,str))
          ((eq nil   ,var) (format " %s=False" ,str))
-         (t (message "Unknown argument in macro `fprettify-args-format'."))))
+         (t (error "Unknown argument %s %s in macro `fprettify-args-format'" ,str ,var))))
+
 (defun fprettify-args ()
   "Create args."
   (if (and fprettify-config-file
