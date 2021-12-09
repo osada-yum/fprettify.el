@@ -30,12 +30,19 @@ write(*,*)j
       print     *   ,   3    *    ( 1                   +2)    ,   .true.   .and.   .false..or..true.
       print*,+1,-9428
 
-      print*,1+2+3+4+5+6+7+8+9+10+11+12+13+14+15+16+17+18+19+20+21+22+23+24+25+26+27+28+29+30+31+32+33+34+35+36+37+38+39+40+41+42+43+44+45+46+47+48
+      !! if delete comment, this line fprettify warn.
+      print*,1+2-3*4/5+6+7+8+9+10+11+12+13+14+15+16+17+18+19+20+21+22+23+! 24+25+26+27+28+29+30+31+32+33+34+35+36+37+38+39+40+41+42+43+44+45+46+47+48
 
       test_t             %    member = 42
 
-      write(   error_unit , ' ( i0   )'   ) test_t%member
+      test_t             %    member = 42 !&
 
+      !&<
+      test_t             %    member = 42
+      write(   error_unit , ' ( i0   )'   ) test_t%member
+      !&>
+      write(   error_unit , ' ( i0   )'   ) test_t%member
+      !&<
   contains
 
 
