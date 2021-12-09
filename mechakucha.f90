@@ -1,3 +1,5 @@
+!! This file is not dust but playground for `fprettify`.
+
 # define are 3490
 module       test_type_m
   implicit   none
