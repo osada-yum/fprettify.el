@@ -1,6 +1,8 @@
 ;;; fprettify.el --- Interface to fprettify, auto-formatter for modern Fortran code -*- lexical-binding: t; -*-
 ;;; Commentary:
 
+;;; Some doc strings is from `fprettify --help'.
+
 ;;; Code:
 (require 'f90)
 (require 'f)
@@ -51,33 +53,163 @@ Default: 2."
                  (const :tag "2 + * or /" 3)
                  (const :tag "3 + type % member" 4)))
 
-(defvar fprettify-whitespace-comma      t)
-(defvar fprettify-whitespace-assignment t)
-(defvar fprettify-whitespace-decl       t)
-(defvar fprettify-whitespace-relational t)
-(defvar fprettify-whitespace-logical    t)
-(defvar fprettify-whitespace-plusminus  t)
-(defvar fprettify-whitespace-multdiv    t)
-(defvar fprettify-whitespace-print      t)
-(defvar fprettify-whitespace-type       nil)
-(defvar fprettify-whitespace-intrinsics t)
+(defcustom fprettify-whitespace-comma 'none
+  "Whitespace for comma (e.g. ,).
+Default: None."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
 
-(defvar fprettify-strict-indent       nil)
-(defvar fprettify-enable-decl         nil)
-(defvar fprettify-disable-indent      nil)
-(defvar fprettify-disable-whitespace  nil)
-(defvar fprettify-enable-replacements t)
-(defvar fprettify-c-relations         t)
-(defvar fprettify-strip-comments      t)
-(defvar fprettify-disable-fypp        nil)
-(defvar fprettify-disable-indent-mod  nil)
+(defcustom fprettify-whitespace-assignment 'none
+  "Whitespace for assignment (e.g. =).
+Default: None."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
 
-(defvar fprettify-tmp-file (make-temp-file "fprettify-tmp" nil ".f90"))
+(defcustom fprettify-whitespace-decl 'none
+  "Whitespace for declarations.
+Default: None."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-whitespace-relational 'none
+  "Whitespace for relational operators (e.g. .le., < ...).
+Default: None."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-whitespace-logical 'none
+  "Whitespace for logical operators (e.g. .and., .or.).
+Default: None."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-whitespace-plusminus 'none
+  "Whitespace for plus/minus arithmetic (e.g. +, -).
+Default: None."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-whitespace-multdiv 'none
+  "Whitespace for multiply/divide arithmetic (e.g. *, /).
+Default: None."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-whitespace-print 'none
+  "Whitespace for print/read.
+Default: None."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-whitespace-type 'none
+  "Whitespace for select type (e.g. type % member).
+Default: None."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-whitespace-intrinsics 'none
+  "Whitespace for intrisics like if/write/close.
+Default: None."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-strict-indent nil
+  "Strictly impose indentation even for nested loops.
+Default: False."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-enable-decl nil
+  "Enable whitespace formatting of declarations (e.g. ::).
+Default: False."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-disable-indent nil
+  "Don't impose indentation.
+Default: False."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-disable-whitespace nil
+  "Don't impose whitespace formatting.
+Default: False."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-enable-replacements nil
+  "Replace relational operators (e.g. '.lt.' <--> '<').
+Default: False."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-c-relations nil
+  "C-style relational operators ('<', '<=', ...).
+Default: False."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-strip-comments nil
+  "Strip whitespaces before comments.
+Default: False."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-disable-fypp nil
+  "Disables the indentation of fypp preprocessor blocks.
+Default: False."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
+
+(defcustom fprettify-disable-indent-mod nil
+  "Disables the indentation after module / program.
+Default: False."
+  :group 'fprettify
+  :type '(choice (const :tag "True"  t)
+                 (const :tag "False" nil)
+                 (const :tag "None"  'none)))
 
 (defmacro fprettify-args-format (str var)
   "If `VAR' is nil then return nil, else return `STR' `VAR'."
   `(cond ((integerp ,var) (format " %s %s"    ,str ,var))
          ((stringp  ,var) (format " %s %s"    ,str ,var))
+         ((eq 'none ,var) (format " %s=None"  ,str))
          ((eq t     ,var) (format " %s=True"  ,str))
          ((eq nil   ,var) (format " %s=False" ,str))
          (t (error "Unknown argument %s %s in macro `fprettify-args-format'" ,str ,var))))
