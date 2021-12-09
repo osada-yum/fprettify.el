@@ -3,6 +3,8 @@
 
 ;;; Code:
 (require 'f90)
+(require 'f)
+
 (defgroup fprettify nil
   "Format with fprettify."
   :group 'applications)
@@ -17,7 +19,9 @@
 (defun fprettify-executable-command ()
   "Return full-path to fprettify if `fprettify-executable-path' exists.
 Otherwise return fprettify."
-  (concat fprettify-executable-path fprettify-executable))
+  (if fprettify-executable-path
+      (f-join fprettify-executable-path fprettify-executable)
+    fprettify-executable))
 
 (defcustom fprettify-config-file nil
   "Path to fprettify config file.
