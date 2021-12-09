@@ -114,28 +114,19 @@ Default: 2."
           (fprettify-args)))
 
 (defun fprettify-run ()
-  "Run `fprettify' with string in `current-buffer'."
+  "Run `fprettify' with `current-buffer' and replace contents.
+If warning exists, echo message in `*fprettify<stderr>*'."
   (interactive)
-  (save-excursion
-    (let ((cur-buf        (current-buffer))
-          (fpe-stdout-buf (get-buffer-create "*fprettify*"))
-          (fpe-stderr-buf (get-buffer-create "*fprettify<stderr>*")))
-      (write-region (point-min) (point-max) fprettify-tmp-file)
-      (shell-command (format "%s %s"
+  (let ((current-linum (line-number-at-pos)) ; save-excursion do not work when replace contents by shell-command-on-region?
+        (fpe-stderr-buf (get-buffer-create "*fprettify<stderr>*")))
+    (shell-command-on-region (point-min) (point-max)
                              (fprettify-command)
-                             fprettify-tmp-file)
-                     fpe-stdout-buf fpe-stderr-buf)
-      (with-current-buffer fpe-stderr-buf
-        (when (< (point-min) (point-max)) ;; Buffer is not empty.
-          (goto-char (point-max))
-          (backward-page)
-          (message (buffer-substring-no-properties (point) (point-max)))
-          (delete-region (point-min) (point-max))))
-      (replace-buffer-contents fpe-stdout-buf))))
+                             nil
+                             t
+                             fpe-stderr-buf
+                             t)
+    (forward-line (1- current-linum))))
 
-(add-hook 'f90-mode-hook
-          #'(lambda()
-              (add-hook 'before-save-hook #'fprettify-run nil 'make-it-local)))
 
 (provide 'fprettify)
 ;;; fprettify.el ends here
