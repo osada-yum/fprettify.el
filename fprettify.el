@@ -110,8 +110,8 @@ Default: 2."
      (when fprettify-enable-replacements " --enable-replacements")
      (when fprettify-c-relations         " --c-relations")
      (when fprettify-strip-comments      " --strip-comments")
-     (when fprettify-disable-fypp        " --disable-fypp")
-     (when fprettify-disable-indent      " --disable-indent"))))
+     (when fprettify-disable-fypp        " --disable-fypp"))))
+
 (defun fprettify-command ()
   "Create command."
   (format "%s %s"
