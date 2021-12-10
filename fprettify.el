@@ -233,7 +233,8 @@ If `VAR' is nil -> False t -> True, 'none -> None.."
      (when fprettify-enable-replacements " --enable-replacements")
      (when fprettify-c-relations         " --c-relations")
      (when fprettify-strip-comments      " --strip-comments")
-     (when fprettify-disable-fypp        " --disable-fypp"))))
+     (when fprettify-disable-fypp        " --disable-fypp")
+     (when fprettify-disable-indent-mod  " --disable-indent-mod"))))
 
 (defun fprettify--command ()
   "Create command."
