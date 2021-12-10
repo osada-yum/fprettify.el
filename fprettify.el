@@ -187,36 +187,45 @@ Default: False."
   :group 'fprettify
   :type 'boolean)
 
-(defmacro fprettify--args-format (str var)
-  "If `VAR' is nil then return nil, else return `STR' `VAR'."
-  `(cond ((integerp ,var) (format " %s %s"    ,str ,var))
-         ((stringp  ,var) (format " %s %s"    ,str ,var))
-         ((eq 'none ,var) (format " %s=None"  ,str))
+(defmacro fprettify--args-format-int (str var)
+  "Format int variable `VAR' of fprettify option `STR'."
+  `(cond ((integerp ,var) (format " %s %s" ,str ,var))
+         (t (error "Unknown value of argument %s (%s) %s in macro `fprettify--args-format-int'" ,str ',var ,var))))
+
+(defmacro fprettify--args-format-file (str fname)
+  "Format filename variable `FNAME' of fprettify option `STR'."
+  `(cond ((file-readable-p ,fname) (format " %s %s" ,str ,fname))
+         (t (error "Unknown value of argument %s (%s) %s in macro `fprettify--args-format-file'" ,str ',fname ,fname))))
+
+(defmacro fprettify--args-format-enable (str var)
+  "Format (t, nil, 'none) variable `VAR' of fprettify option `STR'.
+If `VAR' is nil -> False t -> True, 'none -> None.."
+  `(cond ((eq 'none ,var) (format " %s=None"  ,str))
          ((eq t     ,var) (format " %s=True"  ,str))
          ((eq nil   ,var) (format " %s=False" ,str))
-         (t (error "Unknown value of argument %s (%s) %s in macro `fprettify--args-format'" ,str ',str ,var))))
+         (t (error "Unknown value of argument %s (%s) %s in macro `fprettify--args-format-enable'" ,str ',var ,var))))
 
 (defun fprettify--args ()
   "Create args."
   (if (and fprettify-config-file
            (file-readable-p fprettify-config-file))
       (concat "-s"
-              (fprettify--args-format "-c" fprettify-config-file))
+              (fprettify--args-format-file "-c" fprettify-config-file))
     (concat
      "-s"
-     (fprettify--args-format "-i"  fprettify-indent)
-     (fprettify--args-format "-l"  fprettify-line-length)
-     (fprettify--args-format "-w"  fprettify-whitespace-style)
-     (fprettify--args-format "--whitespace-comma"      fprettify-whitespace-comma)
-     (fprettify--args-format "--whitespace-assignment" fprettify-whitespace-assignment)
-     (fprettify--args-format "--whitespace-decl"       fprettify-whitespace-decl)
-     (fprettify--args-format "--whitespace-relational" fprettify-whitespace-relational)
-     (fprettify--args-format "--whitespace-logical"    fprettify-whitespace-logical)
-     (fprettify--args-format "--whitespace-plusminus"  fprettify-whitespace-plusminus)
-     (fprettify--args-format "--whitespace-multdiv"    fprettify-whitespace-multdiv)
-     (fprettify--args-format "--whitespace-print"      fprettify-whitespace-print)
-     (fprettify--args-format "--whitespace-type"       fprettify-whitespace-type)
-     (fprettify--args-format "--whitespace-intrinsics" fprettify-whitespace-intrinsics)
+     (fprettify--args-format-int "-i"  fprettify-indent)
+     (fprettify--args-format-int "-l"  fprettify-line-length)
+     (fprettify--args-format-int "-w"  fprettify-whitespace-style)
+     (fprettify--args-format-enable "--whitespace-comma"      fprettify-whitespace-comma)
+     (fprettify--args-format-enable "--whitespace-assignment" fprettify-whitespace-assignment)
+     (fprettify--args-format-enable "--whitespace-decl"       fprettify-whitespace-decl)
+     (fprettify--args-format-enable "--whitespace-relational" fprettify-whitespace-relational)
+     (fprettify--args-format-enable "--whitespace-logical"    fprettify-whitespace-logical)
+     (fprettify--args-format-enable "--whitespace-plusminus"  fprettify-whitespace-plusminus)
+     (fprettify--args-format-enable "--whitespace-multdiv"    fprettify-whitespace-multdiv)
+     (fprettify--args-format-enable "--whitespace-print"      fprettify-whitespace-print)
+     (fprettify--args-format-enable "--whitespace-type"       fprettify-whitespace-type)
+     (fprettify--args-format-enable "--whitespace-intrinsics" fprettify-whitespace-intrinsics)
      (when fprettify-strict-indent       " --strict-indent")
      (when fprettify-enable-decl         " --enable-decl")
      (when fprettify-disable-indent      " --disable-indent")
