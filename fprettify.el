@@ -248,24 +248,26 @@ If `VAR' is nil -> False t -> True, 'none -> None.."
 If warning exists, echo message in `*fprettify<stderr>*'."
   (interactive)
   (save-excursion
-    (let ((fpe-stdout-buf (get-buffer-create "*fprettify*"))
+    (let ((cur-buf        (current-buffer))
+          (fpe-stdout-buf (get-buffer-create "*fprettify*"))
           (fpe-stderr-buf (get-buffer-create "*fprettify<stderr>*")))
       ;; Erase contents of `fpe-stderr-buf'.
       (with-current-buffer fpe-stderr-buf
         (erase-buffer))
-      (shell-command-on-region (point-min) (point-max)
-                               (fprettify--command)
-                               fpe-stdout-buf
-                               nil
-                               fpe-stderr-buf
-                               t)
+      (with-current-buffer fpe-stdout-buf
+        (replace-buffer-contents cur-buf)
+        (shell-command-on-region (point-min) (point-max)
+                                 (fprettify--command)
+                                 fpe-stdout-buf
+                                 t
+                                 fpe-stderr-buf
+                                 t))
       (with-current-buffer fpe-stderr-buf
         ;; If error occur.
         (when (and (< (point-min) (point-max))
                    (search-forward "error" nil t))
           (error (buffer-substring-no-properties (point-min) (point-max)))))
-      (replace-buffer-contents fpe-stdout-buf)
-      (delete-windows-on fpe-stdout-buf))))
+      (replace-buffer-contents fpe-stdout-buf))))
 
 (provide 'fprettify)
 ;;; fprettify.el ends here
