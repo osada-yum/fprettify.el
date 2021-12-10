@@ -247,15 +247,25 @@ If `VAR' is nil -> False t -> True, 'none -> None.."
   "Run `fprettify' with `current-buffer' and replace contents.
 If warning exists, echo message in `*fprettify<stderr>*'."
   (interactive)
-  (let ((current-linum (line-number-at-pos)) ; save-excursion do not work when replace contents by shell-command-on-region?
-        (fpe-stderr-buf (get-buffer-create "*fprettify<stderr>*")))
-    (shell-command-on-region (point-min) (point-max)
-                             (fprettify--command)
-                             nil
-                             t
-                             fpe-stderr-buf
-                             t)
-    (forward-line (1- current-linum))))
+  (save-excursion
+    (let ((fpe-stdout-buf (get-buffer-create "*fprettify*"))
+          (fpe-stderr-buf (get-buffer-create "*fprettify<stderr>*")))
+      ;; Erase contents of `fpe-stderr-buf'.
+      (with-current-buffer fpe-stderr-buf
+        (erase-buffer))
+      (shell-command-on-region (point-min) (point-max)
+                               (fprettify--command)
+                               fpe-stdout-buf
+                               nil
+                               fpe-stderr-buf
+                               t)
+      (with-current-buffer fpe-stderr-buf
+        ;; If error occur.
+        (when (and (< (point-min) (point-max))
+                   (search-forward "error" nil t))
+          (error (buffer-substring-no-properties (point-min) (point-max)))))
+      (replace-buffer-contents fpe-stdout-buf)
+      (delete-windows-on fpe-stdout-buf))))
 
 (provide 'fprettify)
 ;;; fprettify.el ends here
