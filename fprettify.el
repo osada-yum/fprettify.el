@@ -137,73 +137,55 @@ Default: None."
   "Strictly impose indentation even for nested loops.
 Default: False."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type 'boolean)
 
 (defcustom fprettify-enable-decl nil
   "Enable whitespace formatting of declarations (e.g. ::).
 Default: False."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type 'boolean)
 
 (defcustom fprettify-disable-indent nil
   "Don't impose indentation.
 Default: False."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type 'boolean)
 
 (defcustom fprettify-disable-whitespace nil
   "Don't impose whitespace formatting.
 Default: False."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type 'boolean)
 
 (defcustom fprettify-enable-replacements nil
   "Replace relational operators (e.g. '.lt.' <--> '<').
 Default: False."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type 'boolean)
 
 (defcustom fprettify-c-relations nil
   "C-style relational operators ('<', '<=', ...).
 Default: False."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type 'boolean)
 
 (defcustom fprettify-strip-comments nil
   "Strip whitespaces before comments.
 Default: False."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type 'boolean)
 
 (defcustom fprettify-disable-fypp nil
   "Disables the indentation of fypp preprocessor blocks.
 Default: False."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type 'boolean)
 
 (defcustom fprettify-disable-indent-mod nil
   "Disables the indentation after module / program.
 Default: False."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type 'boolean)
 
 (defmacro fprettify--args-format (str var)
   "If `VAR' is nil then return nil, else return `STR' `VAR'."
