@@ -18,7 +18,7 @@
   :group 'fprettify
   :type 'directory)
 
-(defun fprettify-executable-command ()
+(defun fprettify--executable-command ()
   "Return full-path to fprettify if `fprettify-executable-path' exists.
 Otherwise return fprettify."
   (if fprettify-executable-path
@@ -205,36 +205,36 @@ Default: False."
                  (const :tag "False" nil)
                  (const :tag "None"  'none)))
 
-(defmacro fprettify-args-format (str var)
+(defmacro fprettify--args-format (str var)
   "If `VAR' is nil then return nil, else return `STR' `VAR'."
   `(cond ((integerp ,var) (format " %s %s"    ,str ,var))
          ((stringp  ,var) (format " %s %s"    ,str ,var))
          ((eq 'none ,var) (format " %s=None"  ,str))
          ((eq t     ,var) (format " %s=True"  ,str))
          ((eq nil   ,var) (format " %s=False" ,str))
-         (t (error "Unknown argument %s %s in macro `fprettify-args-format'" ,str ,var))))
+         (t (error "Unknown value of argument %s (%s) %s in macro `fprettify--args-format'" ,str ',str ,var))))
 
-(defun fprettify-args ()
+(defun fprettify--args ()
   "Create args."
   (if (and fprettify-config-file
            (file-readable-p fprettify-config-file))
       (concat "-s"
-              (fprettify-args-format "-c" fprettify-config-file))
+              (fprettify--args-format "-c" fprettify-config-file))
     (concat
      "-s"
-     (fprettify-args-format "-i"  fprettify-indent)
-     (fprettify-args-format "-l"  fprettify-line-length)
-     (fprettify-args-format "-w"  fprettify-whitespace-style)
-     (fprettify-args-format "--whitespace-comma"      fprettify-whitespace-comma)
-     (fprettify-args-format "--whitespace-assignment" fprettify-whitespace-assignment)
-     (fprettify-args-format "--whitespace-decl"       fprettify-whitespace-decl)
-     (fprettify-args-format "--whitespace-relational" fprettify-whitespace-relational)
-     (fprettify-args-format "--whitespace-logical"    fprettify-whitespace-logical)
-     (fprettify-args-format "--whitespace-plusminus"  fprettify-whitespace-plusminus)
-     (fprettify-args-format "--whitespace-multdiv"    fprettify-whitespace-multdiv)
-     (fprettify-args-format "--whitespace-print"      fprettify-whitespace-print)
-     (fprettify-args-format "--whitespace-type"       fprettify-whitespace-type)
-     (fprettify-args-format "--whitespace-intrinsics" fprettify-whitespace-intrinsics)
+     (fprettify--args-format "-i"  fprettify-indent)
+     (fprettify--args-format "-l"  fprettify-line-length)
+     (fprettify--args-format "-w"  fprettify-whitespace-style)
+     (fprettify--args-format "--whitespace-comma"      fprettify-whitespace-comma)
+     (fprettify--args-format "--whitespace-assignment" fprettify-whitespace-assignment)
+     (fprettify--args-format "--whitespace-decl"       fprettify-whitespace-decl)
+     (fprettify--args-format "--whitespace-relational" fprettify-whitespace-relational)
+     (fprettify--args-format "--whitespace-logical"    fprettify-whitespace-logical)
+     (fprettify--args-format "--whitespace-plusminus"  fprettify-whitespace-plusminus)
+     (fprettify--args-format "--whitespace-multdiv"    fprettify-whitespace-multdiv)
+     (fprettify--args-format "--whitespace-print"      fprettify-whitespace-print)
+     (fprettify--args-format "--whitespace-type"       fprettify-whitespace-type)
+     (fprettify--args-format "--whitespace-intrinsics" fprettify-whitespace-intrinsics)
      (when fprettify-strict-indent       " --strict-indent")
      (when fprettify-enable-decl         " --enable-decl")
      (when fprettify-disable-indent      " --disable-indent")
@@ -244,12 +244,13 @@ Default: False."
      (when fprettify-strip-comments      " --strip-comments")
      (when fprettify-disable-fypp        " --disable-fypp"))))
 
-(defun fprettify-command ()
+(defun fprettify--command ()
   "Create command."
   (format "%s %s"
-          (fprettify-executable-command)
-          (fprettify-args)))
+          (fprettify--executable-command)
+          (fprettify--args)))
 
+;;;###autoload
 (defun fprettify-run ()
   "Run `fprettify' with `current-buffer' and replace contents.
 If warning exists, echo message in `*fprettify<stderr>*'."
@@ -257,13 +258,12 @@ If warning exists, echo message in `*fprettify<stderr>*'."
   (let ((current-linum (line-number-at-pos)) ; save-excursion do not work when replace contents by shell-command-on-region?
         (fpe-stderr-buf (get-buffer-create "*fprettify<stderr>*")))
     (shell-command-on-region (point-min) (point-max)
-                             (fprettify-command)
+                             (fprettify--command)
                              nil
                              t
                              fpe-stderr-buf
                              t)
     (forward-line (1- current-linum))))
-
 
 (provide 'fprettify)
 ;;; fprettify.el ends here
