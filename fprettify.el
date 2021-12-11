@@ -59,81 +59,81 @@ Default: 2."
   "Whitespace for comma (e.g. ,).
 Default: None."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type '(choice (const :tag "None"  none)
+                 (const :tag "True"  t)
+                 (const :tag "False" nil)))
 
 (defcustom fprettify-whitespace-assignment 'none
   "Whitespace for assignment (e.g. =).
 Default: None."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type '(choice (const :tag "None"  none)
+                 (const :tag "True"  t)
+                 (const :tag "False" nil)))
 
 (defcustom fprettify-whitespace-decl 'none
   "Whitespace for declarations.
 Default: None."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type '(choice (const :tag "None"  none)
+                 (const :tag "True"  t)
+                 (const :tag "False" nil)))
 
 (defcustom fprettify-whitespace-relational 'none
   "Whitespace for relational operators (e.g. .le., < ...).
 Default: None."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type '(choice (const :tag "None"  none)
+                 (const :tag "True"  t)
+                 (const :tag "False" nil)))
 
 (defcustom fprettify-whitespace-logical 'none
   "Whitespace for logical operators (e.g. .and., .or.).
 Default: None."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type '(choice (const :tag "None"  none)
+                 (const :tag "True"  t)
+                 (const :tag "False" nil)))
 
 (defcustom fprettify-whitespace-plusminus 'none
   "Whitespace for plus/minus arithmetic (e.g. +, -).
 Default: None."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type '(choice (const :tag "None"  none)
+                 (const :tag "True"  t)
+                 (const :tag "False" nil)))
 
 (defcustom fprettify-whitespace-multdiv 'none
   "Whitespace for multiply/divide arithmetic (e.g. *, /).
 Default: None."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type '(choice (const :tag "None"  none)
+                 (const :tag "True"  t)
+                 (const :tag "False" nil)))
 
 (defcustom fprettify-whitespace-print 'none
   "Whitespace for print/read.
 Default: None."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type '(choice (const :tag "None"  none)
+                 (const :tag "True"  t)
+                 (const :tag "False" nil)))
 
 (defcustom fprettify-whitespace-type 'none
   "Whitespace for select type (e.g. type % member).
 Default: None."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type '(choice (const :tag "None"  none)
+                 (const :tag "True"  t)
+                 (const :tag "False" nil)))
 
 (defcustom fprettify-whitespace-intrinsics 'none
   "Whitespace for intrisics like if/write/close.
 Default: None."
   :group 'fprettify
-  :type '(choice (const :tag "True"  t)
-                 (const :tag "False" nil)
-                 (const :tag "None"  'none)))
+  :type '(choice (const :tag "None"  none)
+                 (const :tag "True"  t)
+                 (const :tag "False" nil)))
 
 (defcustom fprettify-strict-indent nil
   "Strictly impose indentation even for nested loops.
