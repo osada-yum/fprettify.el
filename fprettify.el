@@ -73,7 +73,7 @@ Default: None."
                  (const :tag "False" nil)))
 
 (defcustom fprettify-whitespace-decl 'none
-  "Whitespace for declarations.
+  "Whitespace for declarations if `--enable-decl' exists.
 Default: None."
   :group 'fprettify
   :type '(choice (const :tag "None"  none)
