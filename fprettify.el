@@ -197,7 +197,7 @@ Default: False."
 (defmacro fprettify--args-format-file (str fname)
   "Format filename variable `FNAME' of fprettify option `STR'."
   `(cond ((file-readable-p ,fname) (format " %s %s" ,str ,fname))
-         (t (error "Unknown value of argument %s (%s) %s in macro `fprettify--args-format-file'" ,str ',fname ,fname))))
+         (t (error "Not readable file %s of %s in macro `fprettify--args-format-file'" ,fname ',fname))))
 
 (defmacro fprettify--args-format-enable (str var)
   "Format (t, nil, 'none) variable `VAR' of fprettify option `STR'.
@@ -209,8 +209,7 @@ If `VAR' is nil -> False t -> True, 'none -> None.."
 
 (defun fprettify--args ()
   "Create args."
-  (if (and fprettify-config-file
-           (file-readable-p fprettify-config-file))
+  (if fprettify-config-file
       (concat "-s"
               (fprettify--args-format-file "-c" fprettify-config-file))
     (concat
