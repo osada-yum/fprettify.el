@@ -16,7 +16,8 @@
 (defcustom fprettify-executable-path nil
   "Path to directory of executable of fprettify."
   :group 'fprettify
-  :type 'directory)
+  :type '(choice (const :tag "Default path" nil)
+                 (directory :tag "Path to directory")))
 
 (defun fprettify--executable-command ()
   "Return full-path to fprettify if `fprettify-executable-path' exists.
@@ -29,7 +30,8 @@ Otherwise return fprettify."
   "Path to fprettify config file.
 Default: nil."
   :group 'fprettify
-  :type 'file)
+  :type '(choice (const :tag "Not use config file" nil)
+                 (file :must-match t)))
 
 (defcustom fprettify-indent f90-program-indent
   "Relative indentation width.
