@@ -244,9 +244,16 @@ If `VAR' is nil -> False t -> True, 'none -> None.."
 
 ;;;###autoload
 (defun fprettify-run ()
-  "Run `fprettify' with `current-buffer' and replace contents.
-If warning exists, echo message in `*fprettify<stderr>*'."
+  "Run `fprettify' on buffer."
   (interactive)
+  (fprettify-run-on-region (point-min) (point-max)))
+
+;;;###autoload
+(defun fprettify-run-on-region (start end)
+  "Run `fprettify' on region from START to END and replace contents.
+If warning exists, echo message in `*fprettify<stderr>*'."
+  (interactive
+   (list (region-beginning) (region-end)))
   (save-excursion
     (let ((cur-buf        (current-buffer))
           (fpe-stdout-buf (get-buffer-create "*fprettify*"))
@@ -258,19 +265,22 @@ If warning exists, echo message in `*fprettify<stderr>*'."
       (with-current-buffer fpe-stdout-buf
         (replace-buffer-contents cur-buf)
         (setq ext-code
-              (shell-command-on-region (point-min) (point-max)
+              (shell-command-on-region start end
                                        (fprettify--command)
                                        fpe-stdout-buf
                                        t
                                        fpe-stderr-buf
                                        t))
+        ;; Error handling.
         (with-current-buffer fpe-stderr-buf
-          ;; If error occur.
-          (when (/= ext-code 0)
-            (error "%s exited with code %s" (fprettify--command) ext-code))
-          (when (and (< (point-min) (point-max))
-                     (search-forward "error" nil t))
-            (error (buffer-substring-no-properties (point-min) (point-max))))))
+          (let ((start (point-min))
+                (end   (point-max)))
+            ;; If error occur.
+            (when (/= ext-code 0)
+              (error "%s exited with code %s" (fprettify--command) ext-code))
+            (when (and (< start end)
+                       (search-forward "error" nil t))
+              (error (buffer-substring-no-properties start end))))))
       (replace-buffer-contents fpe-stdout-buf))))
 
 (provide 'fprettify)
