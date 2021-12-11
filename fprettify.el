@@ -33,11 +33,12 @@ Default: nil."
   :type '(choice (const :tag "Not use config file" nil)
                  (file :must-match t)))
 
-(defcustom fprettify-indent f90-program-indent
+(defcustom fprettify-indent 'f90-program-indent
   "Relative indentation width.
 Default: value of `f90-program-indent', not 3."
   :group 'fprettify
-  :type 'integer)
+  :type '(choice (variable :value f90-program-indent)
+                 (integer :value 2)))
 
 (defcustom fprettify-line-length 132
   "Warning if column of line exceeds this value.
@@ -225,10 +226,15 @@ Default: 0."
                  (const :tag "lowercase"  1)
                  (const :tag "uppercase"  2)))
 
-(defmacro fprettify--args-format-int (str var)
-  "Format int variable `VAR' of fprettify option `STR'."
-  `(cond ((integerp ,var) (format " %s %s" ,str ,var))
-         (t (error "Unknown value of argument %s (%s) %s in macro `fprettify--args-format-int'" ,str ',var ,var))))
+(defmacro fprettify--args-format-int (str symb-or-int)
+  "Format int or symbol variable `SYMB-OR-INT' of fprettify option `STR'."
+  (let ((val (gensym)))
+    `(progn
+       (cond ((symbolp ,symb-or-int)
+              (setq ,val (symbol-value ,symb-or-int)))
+             (t (setq ,val ,symb-or-int)))
+       (cond ((integerp ,val) (format " %s %s" ,str ,val))
+             (t (error "Unknown value of argument %s (%s) %s in macro `fprettify--args-format-int'" ,str ',symb-or-int ,val))))))
 
 (defmacro fprettify--args-format-file (str fname)
   "Format filename variable `FNAME' of fprettify option `STR'."
