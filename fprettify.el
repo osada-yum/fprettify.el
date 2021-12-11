@@ -307,10 +307,19 @@ If `VAR' is nil -> False t -> True, 'none -> None.."
 
 ;;;###autoload
 (defun fprettify-run-on-region (start end)
-  "Run `fprettify' on region from START to END and replace contents.
-If warning exists, echo message in `*fprettify<stderr>*'."
+  "Run `fprettify' on region and replace contents.
+START: `beginning-of-line' of `region-beginning'.
+END:   `beginning-of-line' of `next-line' of `region-end'.
+If warning exists, echo message in `*fprettify<stderr>*'.
+If error exists, echo message in `*fprettify<stderr>*', replace do not occur."
   (interactive
-   (list (region-beginning) (region-end)))
+   (let* ((cur-line (line-number-at-pos))
+          (beg-line (line-number-at-pos (region-beginning)))
+          (end-line (line-number-at-pos (region-end)))
+          (region-beg-line-beg-pos (1+ (- beg-line cur-line)))
+          (region-end-line-beg-pos (1+ (- end-line cur-line))))
+     (list (line-beginning-position region-beg-line-beg-pos)
+           (line-beginning-position region-end-line-beg-pos))))
   (save-excursion
     (let ((cur-buf        (current-buffer))
           (fpe-stdout-buf (get-buffer-create "*fprettify*"))
