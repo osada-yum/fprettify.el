@@ -189,6 +189,42 @@ Default: False."
   :group 'fprettify
   :type 'boolean)
 
+(defcustom fprettify-case-1 '0
+  "Case of Case of program, module, contains, do, write and etc.
+0: do nothing | 1: lowercase | 2: uppercase
+Default: 0."
+  :group 'fprettify
+  :type '(choice (const :tag "do nothing" 0)
+                 (const :tag "lowercase"  1)
+                 (const :tag "uppercase"  2)))
+
+(defcustom fprettify-case-2 '0
+  "Case of intrisic module and function (e.g. iso_fortran_env, atan(...)).
+0: do nothing | 1: lowercase | 2: uppercase
+Default: 0."
+  :group 'fprettify
+  :type '(choice (const :tag "do nothing" 0)
+                 (const :tag "lowercase"  1)
+                 (const :tag "uppercase"  2)))
+
+(defcustom fprettify-case-3 '0
+  "Case of logical/relational operators (e.g. .or., .le.).
+0: do nothing | 1: lowercase | 2: uppercase
+Default: 0."
+  :group 'fprettify
+  :type '(choice (const :tag "do nothing" 0)
+                 (const :tag "lowercase"  1)
+                 (const :tag "uppercase"  2)))
+
+(defcustom fprettify-case-4 '0
+  "Case of intrinsic variables (e.g. e0, d0, int32).
+0: do nothing | 1: lowercase | 2: uppercase
+Default: 0."
+  :group 'fprettify
+  :type '(choice (const :tag "do nothing" 0)
+                 (const :tag "lowercase"  1)
+                 (const :tag "uppercase"  2)))
+
 (defmacro fprettify--args-format-int (str var)
   "Format int variable `VAR' of fprettify option `STR'."
   `(cond ((integerp ,var) (format " %s %s" ,str ,var))
@@ -206,6 +242,19 @@ If `VAR' is nil -> False t -> True, 'none -> None.."
          ((eq t     ,var) (format " %s=True"  ,str))
          ((eq nil   ,var) (format " %s=False" ,str))
          (t (error "Unknown value of argument %s (%s) %s in macro `fprettify--args-format-enable'" ,str ',var ,var))))
+
+(defmacro fprettify--args-format-case (str &rest case)
+  "Format int variable `CASE' of fprettify option `STR'."
+  (let ((fmt (gensym))
+        (lst (gensym)))
+    `(let ((,fmt ,str)
+           (,lst (list ,@case)))
+       (when (/= 4 (length ,lst))
+         (error "Length of %s must be 4 in macro `fprettify--args-format-case'" ',case))
+       (dolist (var ,lst)
+         (cond ((integerp var) (setq ,fmt (format " %s %d" ,fmt var)))
+               (t (error "Unknown value of argument %s (%s) %s in macro `fprettify--args-format-case'" ,str ',case var))))
+       ,fmt)))
 
 (defun fprettify--args ()
   "Create args."
@@ -227,6 +276,7 @@ If `VAR' is nil -> False t -> True, 'none -> None.."
      (fprettify--args-format-enable "--whitespace-print"      fprettify-whitespace-print)
      (fprettify--args-format-enable "--whitespace-type"       fprettify-whitespace-type)
      (fprettify--args-format-enable "--whitespace-intrinsics" fprettify-whitespace-intrinsics)
+     (fprettify--args-format-case "--case" fprettify-case-1 fprettify-case-2 fprettify-case-3 fprettify-case-4)
      (when fprettify-strict-indent       " --strict-indent")
      (when fprettify-enable-decl         " --enable-decl")
      (when fprettify-disable-indent      " --disable-indent")
