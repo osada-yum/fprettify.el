@@ -51,10 +51,10 @@ Default: 132."
 Default: 2."
   :group 'fprettify
   :type '(choice (const :tag "minimal" 0)
-                 (const :tag "0 + operators (except arithmetic)" 1)
-                 (const :tag "1 + print or read, + or -" 2)
-                 (const :tag "2 + * or /" 3)
-                 (const :tag "3 + type % member" 4)))
+                 (const :tag "operators (except arithmetic) + 0"       1)
+                 (const :tag "print or read, + or -         + 0 1"     2)
+                 (const :tag "* or /                        + 0 1 2"   3)
+                 (const :tag "type % member                 + 0 1 2 3" 4)))
 
 (defcustom fprettify-whitespace-comma 'none
   "Whitespace for comma (e.g. ,).
