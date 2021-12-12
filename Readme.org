@@ -12,6 +12,7 @@ If error occur, process stop and also open buffer.
 
 *** fprettify-run-on-region
 Run ~fprettify~ from beginning of line of region-beginning to beginning of line of region-end.
+Indentation does not work.
 Note that it format contents between ~!&<~ ~!&>~ if these are NOT in region.
 Also note that error occur if only ~!&>~ exists, but ~!&<~ does not exist in region.
 
