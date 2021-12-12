@@ -233,71 +233,95 @@ Default: 0."
        (cond ((symbolp ,symb-or-int)
               (setq ,val (symbol-value ,symb-or-int)))
              (t (setq ,val ,symb-or-int)))
-       (cond ((integerp ,val) (format " %s %s" ,str ,val))
+       (cond ((integerp ,val) (list ,str (int-to-string ,val)))
              (t (error "Unknown value of argument %s (%s) %s in macro `fprettify--args-format-int'" ,str ',symb-or-int ,val))))))
 
 (defmacro fprettify--args-format-file (str fname)
   "Format filename variable `FNAME' of fprettify option `STR'."
-  `(cond ((file-readable-p ,fname) (format " %s %s" ,str ,fname))
+  `(cond ((file-readable-p ,fname) (list ,str ,fname))
          (t (error "Not readable file %s of %s in macro `fprettify--args-format-file'" ,fname ',fname))))
 
 (defmacro fprettify--args-format-enable (str var)
   "Format (t, nil, 'none) variable `VAR' of fprettify option `STR'.
 If `VAR' is nil -> False t -> True, 'none -> None.."
-  `(cond ((eq 'none ,var) (format " %s=None"  ,str))
-         ((eq t     ,var) (format " %s=True"  ,str))
-         ((eq nil   ,var) (format " %s=False" ,str))
+  `(cond ((eq 'none ,var) (format "%s=None"  ,str))
+         ((eq t     ,var) (format "%s=True"  ,str))
+         ((eq nil   ,var) (format "%s=False" ,str))
          (t (error "Unknown value of argument %s (%s) %s in macro `fprettify--args-format-enable'" ,str ',var ,var))))
 
 (defmacro fprettify--args-format-case (str &rest case)
   "Format int variable `CASE' of fprettify option `STR'."
   (let ((fmt (gensym))
         (lst (gensym)))
-    `(let ((,fmt ,str)
+    `(let ((,fmt (list ,str))
            (,lst (list ,@case)))
        (when (/= 4 (length ,lst))
          (error "Length of %s must be 4 in macro `fprettify--args-format-case'" ',case))
        (dolist (var ,lst)
-         (cond ((integerp var) (setq ,fmt (format " %s %d" ,fmt var)))
+         (cond ((integerp var) (setq ,fmt (nconc ,fmt (list (int-to-string var)))))
                (t (error "Unknown value of argument %s (%s) %s in macro `fprettify--args-format-case'" ,str ',case var))))
        ,fmt)))
 
+(defun fprettify--args-setting ()
+  "Return arguments for `fprettify'.
+These are formatted by `fprettify--args-format-*'
+Type is list of string and list."
+  (list
+   (fprettify--args-format-int "-i"  fprettify-indent)
+   (fprettify--args-format-int "-l"  fprettify-line-length)
+   (fprettify--args-format-int "-w"  fprettify-whitespace-style)
+   (fprettify--args-format-enable "--whitespace-comma"      fprettify-whitespace-comma)
+   (fprettify--args-format-enable "--whitespace-assignment" fprettify-whitespace-assignment)
+   (fprettify--args-format-enable "--whitespace-decl"       fprettify-whitespace-decl)
+   (fprettify--args-format-enable "--whitespace-relational" fprettify-whitespace-relational)
+   (fprettify--args-format-enable "--whitespace-logical"    fprettify-whitespace-logical)
+   (fprettify--args-format-enable "--whitespace-plusminus"  fprettify-whitespace-plusminus)
+   (fprettify--args-format-enable "--whitespace-multdiv"    fprettify-whitespace-multdiv)
+   (fprettify--args-format-enable "--whitespace-print"      fprettify-whitespace-print)
+   (fprettify--args-format-enable "--whitespace-type"       fprettify-whitespace-type)
+   (fprettify--args-format-enable "--whitespace-intrinsics" fprettify-whitespace-intrinsics)
+   (fprettify--args-format-case "--case" fprettify-case-1 fprettify-case-2 fprettify-case-3 fprettify-case-4)
+   (when fprettify-strict-indent       "--strict-indent")
+   (when fprettify-enable-decl         "--enable-decl")
+   (when fprettify-disable-indent      "--disable-indent")
+   (when fprettify-disable-whitespace  "--disable-whitespace")
+   (when fprettify-enable-replacements "--enable-replacements")
+   (when fprettify-c-relations         "--c-relations")
+   (when fprettify-strip-comments      "--strip-comments")
+   (when fprettify-disable-fypp        "--disable-fypp")
+   (when fprettify-disable-indent-mod  "--disable-indent-mod")))
+
 (defun fprettify--args ()
   "Create args."
-  (if fprettify-config-file
-      (concat "-s"
-              (fprettify--args-format-file "-c" fprettify-config-file))
-    (concat
-     "-s"
-     (fprettify--args-format-int "-i"  fprettify-indent)
-     (fprettify--args-format-int "-l"  fprettify-line-length)
-     (fprettify--args-format-int "-w"  fprettify-whitespace-style)
-     (fprettify--args-format-enable "--whitespace-comma"      fprettify-whitespace-comma)
-     (fprettify--args-format-enable "--whitespace-assignment" fprettify-whitespace-assignment)
-     (fprettify--args-format-enable "--whitespace-decl"       fprettify-whitespace-decl)
-     (fprettify--args-format-enable "--whitespace-relational" fprettify-whitespace-relational)
-     (fprettify--args-format-enable "--whitespace-logical"    fprettify-whitespace-logical)
-     (fprettify--args-format-enable "--whitespace-plusminus"  fprettify-whitespace-plusminus)
-     (fprettify--args-format-enable "--whitespace-multdiv"    fprettify-whitespace-multdiv)
-     (fprettify--args-format-enable "--whitespace-print"      fprettify-whitespace-print)
-     (fprettify--args-format-enable "--whitespace-type"       fprettify-whitespace-type)
-     (fprettify--args-format-enable "--whitespace-intrinsics" fprettify-whitespace-intrinsics)
-     (fprettify--args-format-case "--case" fprettify-case-1 fprettify-case-2 fprettify-case-3 fprettify-case-4)
-     (when fprettify-strict-indent       " --strict-indent")
-     (when fprettify-enable-decl         " --enable-decl")
-     (when fprettify-disable-indent      " --disable-indent")
-     (when fprettify-disable-whitespace  " --disable-whitespace")
-     (when fprettify-enable-replacements " --enable-replacements")
-     (when fprettify-c-relations         " --c-relations")
-     (when fprettify-strip-comments      " --strip-comments")
-     (when fprettify-disable-fypp        " --disable-fypp")
-     (when fprettify-disable-indent-mod  " --disable-indent-mod"))))
+  (let ((flatten (if (fboundp #'flatten-list) ; >= emacs-27.1.
+                     (lambda (&rest vals) (flatten-list vals))
+                   ;; local flatten function
+                   (letrec ((fltn (lambda (lst)
+                                    (let* ((v    (car lst))
+                                           (rest (cdr lst))
+                                           (list (if (listp rest) ; for alist.
+                                                     rest
+                                                   (list rest))))
+                                      (cond ((null lst) nil)
+                                            ((null v) (funcall fltn list))
+                                            ((listp v) (append (funcall fltn v) (funcall fltn list)))
+                                            ((atom v) (cons v (funcall fltn list))))))))
+                     (lambda (&rest args) (funcall fltn args))))))
+    (if fprettify-config-file
+        (funcall flatten
+                 "-s"
+                 (fprettify--args-format-file "-c" fprettify-config-file))
+      (funcall flatten
+             "-s"
+             (fprettify--args-setting)))))
 
 (defun fprettify--command ()
   "Create command."
-  (format "%s %s"
-          (fprettify--executable-command)
-          (fprettify--args)))
+  (mapconcat #'shell-quote-argument
+             (cons
+              (fprettify--executable-command)
+              (fprettify--args))
+             " "))
 
 ;;;###autoload
 (defun fprettify-run ()
