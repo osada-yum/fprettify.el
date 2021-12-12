@@ -267,9 +267,9 @@ If `VAR' is nil -> False t -> True, 'none -> None.."
 These are formatted by `fprettify--args-format-*'
 Type is list of string and list."
   (list
-   (fprettify--args-format-int "-i"  fprettify-indent)
-   (fprettify--args-format-int "-l"  fprettify-line-length)
-   (fprettify--args-format-int "-w"  fprettify-whitespace-style)
+   (fprettify--args-format-int "--indent"      fprettify-indent)
+   (fprettify--args-format-int "--line-length" fprettify-line-length)
+   (fprettify--args-format-int "--whitespace"  fprettify-whitespace-style)
    (fprettify--args-format-enable "--whitespace-comma"      fprettify-whitespace-comma)
    (fprettify--args-format-enable "--whitespace-assignment" fprettify-whitespace-assignment)
    (fprettify--args-format-enable "--whitespace-decl"       fprettify-whitespace-decl)
@@ -372,6 +372,29 @@ If error exists, echo message in `*fprettify<stderr>*', replace do not occur."
                        (search-forward "error" nil t))
               (error (buffer-substring-no-properties start end))))))
       (replace-buffer-contents fpe-stdout-buf))))
+
+(defun fprettify--setting-to-config (lst)
+  "Create string of config from `LST'."
+  (let ((config ""))
+    (dolist (val lst)
+      (cond ((null val))     ; do nothing if nil.
+            ((listp val)
+             (if (string-equal "--case" (car val))
+                 (setq config (format "%s%s = [%s,%s,%s,%s]\n" config (car val) (nth 1 val) (nth 2 val) (nth 3 val) (nth 4 val)))
+               (setq config (format "%s%s %s\n" config (car val) (cadr val)))))
+            ((stringp val)
+             (setq config (format "%s%s\n" config val)))))
+    config))
+
+;;;###autoload
+(defun fprettify-create-config-file (file)
+  "Create config file of `fprettify' from customize-variables.
+Save to `FILE'."
+  (interactive "FCreate config file from customize-variables to file: ")
+  (let ((config (fprettify--setting-to-config (fprettify--args-setting))))
+    (with-temp-buffer
+      (insert config)
+      (write-file file t))))
 
 (provide 'fprettify)
 ;;; fprettify.el ends here
