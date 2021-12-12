@@ -4,5 +4,19 @@ Load ~fprettify.el~ and ~M-x~ ~fprettify-run~.
 You can format current-buffer by ~fprettify~.
 You can customize settings of format by ~customize-group fprettify~.
 ~mechakucha.f90~ is file for test `fprettify`.
+
+*** fprettify-run
+Run ~fprettify~ to whole buffer contents.
+If warning occur, buffer ~*fprettify<stderr>*~ open in other window (window is term of emacs).
+If error occur, process stop and also open buffer.
+
+*** fprettify-run-on-region
+Run ~fprettify~ from beginning of line of region-beginning to beginning of line of region-end.
+Note that it format contents between ~!&<~ ~!&>~ if these are NOT in region.
+Also note that error occur if only ~!&>~ exists, but ~!&<~ does not exist in region.
+
+*** fprettify-create-config-file
+Create ~fprettify~ config file by customize-variables.
+
 ** See also
 https://github.com/pseewald/fprettify
