@@ -229,7 +229,7 @@ Default: 0."
 (defmacro fprettify--args-format-int (str symb-or-int)
   "Format int or symbol variable `SYMB-OR-INT' of fprettify option `STR'."
   (let ((val (gensym)))
-    `(progn
+    `(let (,val)
        (cond ((symbolp ,symb-or-int)
               (setq ,val (symbol-value ,symb-or-int)))
              (t (setq ,val ,symb-or-int)))
