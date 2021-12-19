@@ -348,6 +348,7 @@ If error exists, echo message in `*fprettify<stderr>*', replace do not occur."
     (let ((cur-buf        (current-buffer))
           (fpe-stdout-buf (get-buffer-create "*fprettify*"))
           (fpe-stderr-buf (get-buffer-create "*fprettify<stderr>*"))
+          (fprettify-comm (fprettify--command))
           (ext-code))
       ;; Erase contents of `fpe-stderr-buf'.
       (with-current-buffer fpe-stderr-buf
@@ -356,7 +357,7 @@ If error exists, echo message in `*fprettify<stderr>*', replace do not occur."
         (replace-buffer-contents cur-buf)
         (setq ext-code
               (shell-command-on-region start end
-                                       (fprettify--command)
+                                       fprettify-comm
                                        fpe-stdout-buf
                                        t
                                        fpe-stderr-buf
